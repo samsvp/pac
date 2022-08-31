@@ -63,4 +63,6 @@ void pac_update(pac* const p, unsigned int ms);
 
 void pac_cheat_invincibility(pac* const p);
 
+
+uint8_t rb(void* userdata, uint16_t addr);
 #endif // PAC_PAC_H

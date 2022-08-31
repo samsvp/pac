@@ -1,6 +1,6 @@
 #include "pac.h"
 
-static uint8_t rb(void* userdata, uint16_t addr) {
+uint8_t rb(void* userdata, uint16_t addr) {
   pac* const p = (pac*) userdata;
 
   // according to https://www.csh.rit.edu/~jerry/arcade/pacman/daves/

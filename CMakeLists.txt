@@ -8,6 +8,7 @@ project(pac
 
 set(SOURCES src/main.c src/pac.c src/wsg.c deps/z80/z80.c)
 set(ROMS_DIR "./roms/" CACHE STRING "Path to directory containing rom files")
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
 
 add_executable(pac ${SOURCES})
 set_target_properties(pac PROPERTIES C_STANDARD 99)
@@ -24,7 +25,7 @@ if (EMSCRIPTEN)
 else()
   find_package(SDL2 REQUIRED)
   target_include_directories(pac PRIVATE ${SDL2_INCLUDE_DIRS})
-  target_link_libraries(pac PRIVATE ${SDL2_LIBRARIES})
+  target_link_libraries(pac PRIVATE ${SDL2_LIBRARIES} m)
 endif()
 
 target_include_directories(pac PRIVATE src/ deps/)
