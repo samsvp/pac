@@ -198,7 +198,7 @@ static void mainloop(un_socket_t socket) {
     }
   }
 
-  char buffer[2];
+  char buffer[1];
   ssize_t bytes_read = read(socket.server_fd, buffer, sizeof(buffer));
   if (bytes_read > 0) {
     switch (button_from_char(buffer[0])) {
@@ -206,7 +206,7 @@ static void mainloop(un_socket_t socket) {
       case BUTTON_DOWN: p->p1_down = 1; break;
       case BUTTON_LEFT: p->p1_left = 1; break;
       case BUTTON_RIGHT: p->p1_right = 1; break;
-      case BUTTON_COIN: p->coin_s1 = 0; break;
+      case BUTTON_COIN: p->coin_s1 = 1; break;
       default: break;
     }
   }
