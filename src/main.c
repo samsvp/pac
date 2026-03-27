@@ -1,16 +1,18 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <time.h>
 #include <signal.h>
 
 #include <SDL.h>
+#include <unistd.h>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
 
 #include "pac.h"
+#include "buttons.h"
+#include "socket.h"
 
 #define CONTROLLER_DEADZONE 8000
 
@@ -81,7 +83,7 @@ static void screenshot(pac* const p) {
   SDL_free(filename);
 }
 
-static void mainloop(void) {
+static void mainloop(un_socket_t socket) {
   current_time = SDL_GetTicks();
   dt = current_time - last_time;
 
@@ -193,6 +195,19 @@ static void mainloop(void) {
         SDL_GameControllerClose(controller);
         controller = NULL;
       }
+    }
+  }
+
+  char buffer[2];
+  ssize_t bytes_read = read(socket.server_fd, buffer, sizeof(buffer));
+  if (bytes_read > 0) {
+    switch (button_from_char(buffer[0])) {
+      case BUTTON_UP: p->p1_up = 1; break;
+      case BUTTON_DOWN: p->p1_down = 1; break;
+      case BUTTON_LEFT: p->p1_left = 1; break;
+      case BUTTON_RIGHT: p->p1_right = 1; break;
+      case BUTTON_COIN: p->coin_s1 = 0; break;
+      default: break;
     }
   }
 
@@ -314,15 +329,22 @@ int main(int argc, char** argv) {
   SDL_free(base_path);
 
   // main loop
+  un_socket_t socket;
+  if (socket_create(&socket, "/tmp/pac.sock") == -1) {
+    exit(-1);
+  }
+
   current_time = SDL_GetTicks();
   last_time = SDL_GetTicks();
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop(mainloop, 0, 1);
 #else
   while (!should_quit) {
-    mainloop();
+    mainloop(socket);
   }
 #endif
+
+  socket_destroy(&socket);
 
   pac_quit(p);
   SDL_free(p);

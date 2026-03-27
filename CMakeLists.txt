@@ -6,7 +6,7 @@ project(pac
   HOMEPAGE_URL "https://github.com/superzazu/pac"
 )
 
-set(SOURCES src/main.c src/pac.c src/wsg.c deps/z80/z80.c)
+set(SOURCES src/main.c src/pac.c src/wsg.c src/buttons.c src/socket.c deps/z80/z80.c)
 set(ROMS_DIR "./roms/" CACHE STRING "Path to directory containing rom files")
 
 add_executable(pac ${SOURCES})

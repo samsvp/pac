@@ -1,0 +1,26 @@
+[
+{
+  "directory": "/home/volin/git/pac/build",
+  "command": "/usr/bin/cc  -I/home/volin/git/pac/src -I/home/volin/git/pac/deps -isystem /usr/include/SDL2 -std=gnu99 -Wall -Wextra -pedantic -o CMakeFiles/pac.dir/src/main.c.o -c /home/volin/git/pac/src/main.c",
+  "file": "/home/volin/git/pac/src/main.c",
+  "output": "CMakeFiles/pac.dir/src/main.c.o"
+},
+{
+  "directory": "/home/volin/git/pac/build",
+  "command": "/usr/bin/cc  -I/home/volin/git/pac/src -I/home/volin/git/pac/deps -isystem /usr/include/SDL2 -std=gnu99 -Wall -Wextra -pedantic -o CMakeFiles/pac.dir/src/pac.c.o -c /home/volin/git/pac/src/pac.c",
+  "file": "/home/volin/git/pac/src/pac.c",
+  "output": "CMakeFiles/pac.dir/src/pac.c.o"
+},
+{
+  "directory": "/home/volin/git/pac/build",
+  "command": "/usr/bin/cc  -I/home/volin/git/pac/src -I/home/volin/git/pac/deps -isystem /usr/include/SDL2 -std=gnu99 -Wall -Wextra -pedantic -o CMakeFiles/pac.dir/src/wsg.c.o -c /home/volin/git/pac/src/wsg.c",
+  "file": "/home/volin/git/pac/src/wsg.c",
+  "output": "CMakeFiles/pac.dir/src/wsg.c.o"
+},
+{
+  "directory": "/home/volin/git/pac/build",
+  "command": "/usr/bin/cc  -I/home/volin/git/pac/src -I/home/volin/git/pac/deps -isystem /usr/include/SDL2 -std=gnu99 -Wall -Wextra -pedantic -o CMakeFiles/pac.dir/deps/z80/z80.c.o -c /home/volin/git/pac/deps/z80/z80.c",
+  "file": "/home/volin/git/pac/deps/z80/z80.c",
+  "output": "CMakeFiles/pac.dir/deps/z80/z80.c.o"
+}
+]
