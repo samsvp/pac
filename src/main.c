@@ -17,7 +17,6 @@
 #define CONTROLLER_DEADZONE 8000
 
 static bool should_quit = false;
-static bool has_focus = true;
 static bool is_paused = false;
 static int speed = 1;
 
@@ -83,7 +82,7 @@ static void screenshot(pac* const p) {
   SDL_free(filename);
 }
 
-static void mainloop(un_socket_t socket) {
+static void mainloop(un_socket_t* socket) {
   current_time = SDL_GetTicks();
   dt = current_time - last_time;
 
@@ -91,12 +90,6 @@ static void mainloop(un_socket_t socket) {
   while (SDL_PollEvent(&e) != 0) {
     if (e.type == SDL_QUIT) {
       should_quit = true;
-    } else if (e.type == SDL_WINDOWEVENT) {
-      if (e.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
-        has_focus = true;
-      } else if (e.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-        has_focus = false;
-      }
     } else if (e.type == SDL_KEYDOWN) {
       switch (e.key.keysym.scancode) {
       case SDL_SCANCODE_RETURN:
@@ -198,9 +191,11 @@ static void mainloop(un_socket_t socket) {
     }
   }
 
+  socket_accept(socket);
   char buffer[1];
-  ssize_t bytes_read = read(socket.server_fd, buffer, sizeof(buffer));
+  ssize_t bytes_read = socket_read(socket, buffer, sizeof(buffer));
   if (bytes_read > 0) {
+    printf("received %c\n", buffer[0]);
     switch (button_from_char(buffer[0])) {
       case BUTTON_UP: p->p1_up = 1; break;
       case BUTTON_DOWN: p->p1_down = 1; break;
@@ -211,7 +206,7 @@ static void mainloop(un_socket_t socket) {
     }
   }
 
-  if (!is_paused && has_focus) {
+  if (!is_paused) {
     pac_update(p, dt * speed);
   }
 
@@ -340,7 +335,7 @@ int main(int argc, char** argv) {
   emscripten_set_main_loop(mainloop, 0, 1);
 #else
   while (!should_quit) {
-    mainloop(socket);
+    mainloop(&socket);
   }
 #endif
 

@@ -4,3 +4,5 @@ build/
 build-web/
 roms/
 TODO.md
+compile_commands.json
+.cache

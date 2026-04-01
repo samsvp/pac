@@ -1,26 +1,32 @@
 [
 {
-  "directory": "/home/volin/git/pac/build",
-  "command": "/usr/bin/cc  -I/home/volin/git/pac/src -I/home/volin/git/pac/deps -isystem /usr/include/SDL2 -std=gnu99 -Wall -Wextra -pedantic -o CMakeFiles/pac.dir/src/main.c.o -c /home/volin/git/pac/src/main.c",
-  "file": "/home/volin/git/pac/src/main.c",
-  "output": "CMakeFiles/pac.dir/src/main.c.o"
+  "directory": "/home/antedeguemon/git/pac/build",
+  "command": "/usr/bin/cc  -I/usr/include/SDL2 -I/home/antedeguemon/git/pac/src -I/home/antedeguemon/git/pac/deps -Wall -Wextra -pedantic -std=gnu99 -o CMakeFiles/pac.dir/src/main.c.o -c /home/antedeguemon/git/pac/src/main.c",
+  "file": "/home/antedeguemon/git/pac/src/main.c"
 },
 {
-  "directory": "/home/volin/git/pac/build",
-  "command": "/usr/bin/cc  -I/home/volin/git/pac/src -I/home/volin/git/pac/deps -isystem /usr/include/SDL2 -std=gnu99 -Wall -Wextra -pedantic -o CMakeFiles/pac.dir/src/pac.c.o -c /home/volin/git/pac/src/pac.c",
-  "file": "/home/volin/git/pac/src/pac.c",
-  "output": "CMakeFiles/pac.dir/src/pac.c.o"
+  "directory": "/home/antedeguemon/git/pac/build",
+  "command": "/usr/bin/cc  -I/usr/include/SDL2 -I/home/antedeguemon/git/pac/src -I/home/antedeguemon/git/pac/deps -Wall -Wextra -pedantic -std=gnu99 -o CMakeFiles/pac.dir/src/pac.c.o -c /home/antedeguemon/git/pac/src/pac.c",
+  "file": "/home/antedeguemon/git/pac/src/pac.c"
 },
 {
-  "directory": "/home/volin/git/pac/build",
-  "command": "/usr/bin/cc  -I/home/volin/git/pac/src -I/home/volin/git/pac/deps -isystem /usr/include/SDL2 -std=gnu99 -Wall -Wextra -pedantic -o CMakeFiles/pac.dir/src/wsg.c.o -c /home/volin/git/pac/src/wsg.c",
-  "file": "/home/volin/git/pac/src/wsg.c",
-  "output": "CMakeFiles/pac.dir/src/wsg.c.o"
+  "directory": "/home/antedeguemon/git/pac/build",
+  "command": "/usr/bin/cc  -I/usr/include/SDL2 -I/home/antedeguemon/git/pac/src -I/home/antedeguemon/git/pac/deps -Wall -Wextra -pedantic -std=gnu99 -o CMakeFiles/pac.dir/src/wsg.c.o -c /home/antedeguemon/git/pac/src/wsg.c",
+  "file": "/home/antedeguemon/git/pac/src/wsg.c"
 },
 {
-  "directory": "/home/volin/git/pac/build",
-  "command": "/usr/bin/cc  -I/home/volin/git/pac/src -I/home/volin/git/pac/deps -isystem /usr/include/SDL2 -std=gnu99 -Wall -Wextra -pedantic -o CMakeFiles/pac.dir/deps/z80/z80.c.o -c /home/volin/git/pac/deps/z80/z80.c",
-  "file": "/home/volin/git/pac/deps/z80/z80.c",
-  "output": "CMakeFiles/pac.dir/deps/z80/z80.c.o"
+  "directory": "/home/antedeguemon/git/pac/build",
+  "command": "/usr/bin/cc  -I/usr/include/SDL2 -I/home/antedeguemon/git/pac/src -I/home/antedeguemon/git/pac/deps -Wall -Wextra -pedantic -std=gnu99 -o CMakeFiles/pac.dir/src/buttons.c.o -c /home/antedeguemon/git/pac/src/buttons.c",
+  "file": "/home/antedeguemon/git/pac/src/buttons.c"
+},
+{
+  "directory": "/home/antedeguemon/git/pac/build",
+  "command": "/usr/bin/cc  -I/usr/include/SDL2 -I/home/antedeguemon/git/pac/src -I/home/antedeguemon/git/pac/deps -Wall -Wextra -pedantic -std=gnu99 -o CMakeFiles/pac.dir/src/socket.c.o -c /home/antedeguemon/git/pac/src/socket.c",
+  "file": "/home/antedeguemon/git/pac/src/socket.c"
+},
+{
+  "directory": "/home/antedeguemon/git/pac/build",
+  "command": "/usr/bin/cc  -I/usr/include/SDL2 -I/home/antedeguemon/git/pac/src -I/home/antedeguemon/git/pac/deps -Wall -Wextra -pedantic -std=gnu99 -o CMakeFiles/pac.dir/deps/z80/z80.c.o -c /home/antedeguemon/git/pac/deps/z80/z80.c",
+  "file": "/home/antedeguemon/git/pac/deps/z80/z80.c"
 }
 ]

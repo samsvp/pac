@@ -1,5 +1,6 @@
 #include "socket.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -9,6 +10,8 @@
 
 int socket_create(un_socket_t* sock, const char* path) {
   int server_fd;
+  sock->client_fd = -1;
+  sock->server_fd = -1;
   struct sockaddr_un addr;
 
   if (strlen(path) >= sizeof(addr.sun_path)) {
@@ -33,7 +36,7 @@ int socket_create(un_socket_t* sock, const char* path) {
     goto cleanup;
   }
 
-  if (listen(server_fd, 5) == -1) {
+  if (listen(server_fd, 1) == -1) {
     perror("Error listening on socket");
     goto cleanup;
   }
@@ -66,6 +69,41 @@ void socket_destroy(un_socket_t* sock) {
   }
 
   close(sock->server_fd);
+  if (sock->client_fd >= 0) {
+    close(sock->client_fd);
+  }
+
   unlink(sock->addr.sun_path);
   sock->server_fd = -1;
+  sock->client_fd = -1;
+}
+
+void socket_accept(un_socket_t* sock) {
+  if (sock->client_fd > 0) {
+    return;
+  }
+
+  int client_fd = accept(sock->server_fd, NULL, NULL);
+  if (client_fd > 0) {
+    sock->client_fd = client_fd;
+  }
+}
+
+ssize_t socket_read(un_socket_t* sock, char* buffer, size_t buffer_length) {
+  if (sock->client_fd <= 0) {
+    return 0;
+  }
+
+  ssize_t bytes_read = read(sock->client_fd, buffer, buffer_length);
+  if (bytes_read > 0) {
+    return bytes_read;
+  } else if (bytes_read == -1) {
+    if (errno == EAGAIN || errno == EWOULDBLOCK) {
+      return 0;
+    }
+  }
+
+  close(sock->client_fd);
+  sock->client_fd = -1;
+  return 0;
 }
