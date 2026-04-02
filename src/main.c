@@ -192,17 +192,34 @@ static void mainloop(un_socket_t* socket) {
   }
 
   socket_accept(socket);
-  char buffer[1];
+  char buffer[2];
   ssize_t bytes_read = socket_read(socket, buffer, sizeof(buffer));
-  if (bytes_read > 0) {
-    printf("received %c\n", buffer[0]);
-    switch (button_from_char(buffer[0])) {
-      case BUTTON_UP: p->p1_up = 1; break;
-      case BUTTON_DOWN: p->p1_down = 1; break;
-      case BUTTON_LEFT: p->p1_left = 1; break;
-      case BUTTON_RIGHT: p->p1_right = 1; break;
-      case BUTTON_COIN: p->coin_s1 = 1; break;
-      default: break;
+  if (bytes_read == 2) {
+    printf("received %c and %c\n", buffer[0], buffer[1]);
+    button_event_t event = button_event_from_char(buffer[0]);
+    switch (event) {
+      case EVENT_DOWN:
+        switch (button_from_char(buffer[1])) {
+          case BUTTON_UP: p->p1_up = 1; break;
+          case BUTTON_DOWN: p->p1_down = 1; break;
+          case BUTTON_LEFT: p->p1_left = 1; break;
+          case BUTTON_RIGHT: p->p1_right = 1; break;
+          case BUTTON_COIN: p->coin_s1 = 1; break;
+          default: break;
+        }
+        break;
+      case EVENT_UP:
+        switch (button_from_char(buffer[1])) {
+          case BUTTON_UP: p->p1_up = 0; break;
+          case BUTTON_DOWN: p->p1_down = 0; break;
+          case BUTTON_LEFT: p->p1_left = 0; break;
+          case BUTTON_RIGHT: p->p1_right = 0; break;
+          case BUTTON_COIN: p->coin_s1 = 0; break;
+          default: break;
+        }
+        break;
+      default:
+        break;
     }
   }
 

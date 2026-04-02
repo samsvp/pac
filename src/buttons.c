@@ -14,3 +14,15 @@ buttons_t button_from_char(char c) {
 
   return button;
 }
+
+button_event_t button_event_from_char(char c) {
+  button_event_t event = EVENT_NONE;
+
+  switch (c) {
+    case 'u': event = EVENT_UP; break;
+    case 'd': event = EVENT_DOWN; break;
+    default: break;
+  }
+
+  return event;
+}

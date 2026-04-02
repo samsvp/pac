@@ -85,6 +85,10 @@ void socket_accept(un_socket_t* sock) {
 
   int client_fd = accept(sock->server_fd, NULL, NULL);
   if (client_fd > 0) {
+    int curr_flags = fcntl(client_fd, F_GETFL, 0);
+    if (curr_flags != -1) {
+      fcntl(client_fd, F_SETFL, curr_flags | O_NONBLOCK);
+    }
     sock->client_fd = client_fd;
   }
 }
