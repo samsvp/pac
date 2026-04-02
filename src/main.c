@@ -193,6 +193,8 @@ static void mainloop(un_socket_t* controller_socket, un_socket_t* state_socket) 
   }
 
   socket_accept(controller_socket);
+  socket_accept(state_socket);
+
   char buffer[2];
   ssize_t bytes_read = socket_read(controller_socket, buffer, sizeof(buffer));
   if (bytes_read == 2) {
@@ -224,13 +226,15 @@ static void mainloop(un_socket_t* controller_socket, un_socket_t* state_socket) 
     }
   }
 
+  char state_buffer[MAP_WIDTH * MAP_HEIGHT];
+  pac_get_state(p, state_buffer);
+  socket_write(state_socket, state_buffer, MAP_WIDTH * MAP_HEIGHT);
+
   if (PRINT_TILES) {
     putchar('\n');
-    char buffer[MAP_WIDTH * MAP_HEIGHT];
-    pac_get_state(p, buffer);
     for (int y = 0; y < MAP_HEIGHT; y++) {
       for (int x = 0; x < MAP_WIDTH; x++) {
-        putchar(buffer[y * MAP_WIDTH + x]);
+        putchar(state_buffer[y * MAP_WIDTH + x]);
       }
       putchar('\n');
     }
