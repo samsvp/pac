@@ -111,3 +111,20 @@ ssize_t socket_read(un_socket_t* sock, char* buffer, size_t buffer_length) {
   sock->client_fd = -1;
   return 0;
 }
+
+ssize_t socket_write(un_socket_t* sock, char* buffer, size_t buffer_length) {
+  if (sock->client_fd <= 0) {
+    return 0;
+  }
+
+  ssize_t bytes_written = write(sock->client_fd, buffer, buffer_length);
+  if (bytes_written > 0) {
+    return bytes_written;
+  } else if (bytes_written == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+    return 0;
+  }
+
+  close(sock->client_fd);
+  sock->client_fd = -1;
+  return 0;
+}

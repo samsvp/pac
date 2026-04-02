@@ -15,6 +15,9 @@
 #define PAC_SCREEN_WIDTH 224
 #define PAC_SCREEN_HEIGHT 288
 
+#define MAP_WIDTH 28
+#define MAP_HEIGHT 36
+
 typedef struct pac pac;
 struct pac {
   z80 cpu;
@@ -62,5 +65,7 @@ void pac_quit(pac* const p);
 void pac_update(pac* const p, unsigned int ms);
 
 void pac_cheat_invincibility(pac* const p);
+
+int pac_get_state(pac* const p, char buffer[MAP_WIDTH * MAP_HEIGHT]);
 
 #endif // PAC_PAC_H

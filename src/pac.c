@@ -1,4 +1,5 @@
 #include "pac.h"
+#include <stdio.h>
 
 static uint8_t rb(void* userdata, uint16_t addr) {
   pac* const p = (pac*) userdata;
@@ -529,4 +530,71 @@ void pac_cheat_invincibility(pac* const p) {
   p->rom[0x3ce7 + 0] = 0xaf;
 
   printf("applied invincibility patch\n");
+}
+
+static uint8_t get_pos_x(pac* const p, uint16_t byte) {
+  return 0x1B - (p->cpu.read_byte(p, byte) - 0x20);
+}
+
+static uint8_t get_pos_y(pac* const p, uint16_t byte) {
+  return p->cpu.read_byte(p, byte) - 0x20;
+}
+
+int pac_get_state(pac* const p, char buffer[MAP_WIDTH * MAP_HEIGHT]) {
+  memset(buffer, '#', MAP_WIDTH * MAP_HEIGHT);
+
+  int map_width = 0x3B - 0x20;
+  int map_height = 0x3F - 0x20;
+  for (int y = 1; y <= map_height; y++) {
+    for (int x = 0; x <= map_width; x++) {
+      int byte = 0x4040 + y + x * 0x20;
+      int tile = p->cpu.read_byte(p, byte);
+
+      int index = y * MAP_WIDTH + (map_width - x);
+      // small pellet (dot)
+      if (tile == 0x10) {
+        buffer[index] = 'd';
+      }
+      // power pellet (energizer)
+      else if (tile == 0x14) {
+        buffer[index] = 'e';
+      }
+      // empty
+      else if (tile == 0x40) {
+        buffer[index] = ' ';
+      }
+    }
+  }
+
+  uint8_t pacman_x = get_pos_x(p, 0x4D3A);
+  uint8_t pacman_y = get_pos_y(p, 0x4D39);
+
+  uint8_t red_x = get_pos_x(p, 0x4D0B);
+  uint8_t red_y = get_pos_y(p, 0x4D0A);
+
+  uint8_t pink_x = get_pos_x(p, 0x4D0D);
+  uint8_t pink_y = get_pos_y(p, 0x4D0C);
+
+  uint8_t blue_x = get_pos_x(p, 0x4D0F);
+  uint8_t blue_y = get_pos_y(p, 0x4D0E);
+
+  uint8_t clyde_x = get_pos_x(p, 0x4D11);
+  uint8_t clyde_y = get_pos_y(p, 0x4D10);
+
+  if (pacman_x < MAP_WIDTH && pacman_y < MAP_HEIGHT)
+      buffer[pacman_y * MAP_WIDTH + pacman_x] = 'p';
+
+  if (red_x < MAP_WIDTH && red_y < MAP_HEIGHT)
+      buffer[red_y * MAP_WIDTH + red_x] = 'r';
+
+  if (pink_x < MAP_WIDTH && pink_y < MAP_HEIGHT)
+      buffer[pink_y * MAP_WIDTH + pink_x] = 'g';
+
+  if (blue_x < MAP_WIDTH && blue_y < MAP_HEIGHT)
+      buffer[blue_y * MAP_WIDTH + blue_x] = 'b';
+
+  if (clyde_x < MAP_WIDTH && clyde_y < MAP_HEIGHT)
+      buffer[clyde_y * MAP_WIDTH + clyde_x] = 'c';
+
+  return 0;
 }

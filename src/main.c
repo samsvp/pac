@@ -15,6 +15,7 @@
 #include "socket.h"
 
 #define CONTROLLER_DEADZONE 8000
+#define PRINT_TILES false
 
 static bool should_quit = false;
 static bool is_paused = false;
@@ -82,7 +83,7 @@ static void screenshot(pac* const p) {
   SDL_free(filename);
 }
 
-static void mainloop(un_socket_t* socket) {
+static void mainloop(un_socket_t* controller_socket, un_socket_t* state_socket) {
   current_time = SDL_GetTicks();
   dt = current_time - last_time;
 
@@ -191,9 +192,9 @@ static void mainloop(un_socket_t* socket) {
     }
   }
 
-  socket_accept(socket);
+  socket_accept(controller_socket);
   char buffer[2];
-  ssize_t bytes_read = socket_read(socket, buffer, sizeof(buffer));
+  ssize_t bytes_read = socket_read(controller_socket, buffer, sizeof(buffer));
   if (bytes_read == 2) {
     printf("received %c and %c\n", buffer[0], buffer[1]);
     button_event_t event = button_event_from_char(buffer[0]);
@@ -221,6 +222,21 @@ static void mainloop(un_socket_t* socket) {
       default:
         break;
     }
+  }
+
+  if (PRINT_TILES) {
+    putchar('\n');
+    char buffer[MAP_WIDTH * MAP_HEIGHT];
+    pac_get_state(p, buffer);
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+      for (int x = 0; x < MAP_WIDTH; x++) {
+        putchar(buffer[y * MAP_WIDTH + x]);
+      }
+      putchar('\n');
+    }
+
+    putchar('\n');
+    fflush(stdout);
   }
 
   if (!is_paused) {
@@ -341,8 +357,13 @@ int main(int argc, char** argv) {
   SDL_free(base_path);
 
   // main loop
-  un_socket_t socket;
-  if (socket_create(&socket, "/tmp/pac.sock") == -1) {
+  un_socket_t controller_socket;
+  if (socket_create(&controller_socket, "/tmp/pac.sock") == -1) {
+    exit(-1);
+  }
+
+  un_socket_t state_socket;
+  if (socket_create(&state_socket, "/tmp/pac.state.sock") == -1) {
     exit(-1);
   }
 
@@ -352,11 +373,12 @@ int main(int argc, char** argv) {
   emscripten_set_main_loop(mainloop, 0, 1);
 #else
   while (!should_quit) {
-    mainloop(&socket);
+    mainloop(&controller_socket, &state_socket);
   }
 #endif
 
-  socket_destroy(&socket);
+  socket_destroy(&controller_socket);
+  socket_destroy(&state_socket);
 
   pac_quit(p);
   SDL_free(p);
