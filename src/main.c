@@ -230,7 +230,17 @@ static void mainloop(un_socket_t* controller_socket, un_socket_t* state_socket) 
   pac_get_state(p, state_buffer);
   socket_write(state_socket, state_buffer, MAP_WIDTH * MAP_HEIGHT);
 
+  char pos_buffer[10];
+  pac_get_positions(p, pos_buffer);
+
   if (PRINT_TILES) {
+    for (int i = 0; i < 10; i+=2) {
+      uint8_t p_x = pos_buffer[i];
+      uint8_t p_y = pos_buffer[i+1];
+      printf("%d, %d\n", p_x, p_y);
+    }
+    printf("\n");
+
     putchar('\n');
     for (int y = 0; y < MAP_HEIGHT; y++) {
       for (int x = 0; x < MAP_WIDTH; x++) {

@@ -540,7 +540,7 @@ static uint8_t get_pos_y(pac* const p, uint16_t byte) {
   return p->cpu.read_byte(p, byte) - 0x20;
 }
 
-int pac_get_state(pac* const p, char buffer[MAP_WIDTH * MAP_HEIGHT]) {
+void pac_get_state(pac* const p, char buffer[MAP_WIDTH * MAP_HEIGHT]) {
   memset(buffer, '#', MAP_WIDTH * MAP_HEIGHT);
 
   int map_width = 0x3B - 0x20;
@@ -595,6 +595,52 @@ int pac_get_state(pac* const p, char buffer[MAP_WIDTH * MAP_HEIGHT]) {
 
   if (clyde_x < MAP_WIDTH && clyde_y < MAP_HEIGHT)
       buffer[clyde_y * MAP_WIDTH + clyde_x] = 'c';
+}
 
-  return 0;
+// Order is as follows: [x] [y]
+// red [0] [1]
+// pink [2] [3]
+// blue [4] [5]
+// clyde [6] [7]
+// pacman [8] [9]
+void pac_get_positions(pac* const p, char buffer[10]) {
+  // The reliable logical tile coordinate addresses in RAM:
+  uint16_t actor_addrs[5][2] = {
+    {0x4D0B, 0x4D0A}, // Red X, Y
+    {0x4D0D, 0x4D0C}, // Pink X, Y
+    {0x4D0F, 0x4D0E}, // Blue X, Y
+    {0x4D11, 0x4D10}, // Clyde X, Y
+    {0x4D3A, 0x4D39}  // Pac-Man X, Y
+  };
+
+  for (int i = 0; i < 5; i++) {
+    int expected_x = get_pos_x(p, actor_addrs[i][0]) * 8;
+    int expected_y = get_pos_y(p, actor_addrs[i][1]) * 8;
+
+    int best_s = -1;
+    int min_dist = 999999;
+
+    // Search all 8 hardware sprite slots to find the closest physical match
+    for (int s = 0; s < 8; s++) {
+      int16_t px = PAC_SCREEN_WIDTH - p->sprite_pos[s * 2] + 15;
+      int16_t py = PAC_SCREEN_HEIGHT - p->sprite_pos[s * 2 + 1] - 16;
+
+      int dx = px - expected_x;
+      int dy = py - expected_y;
+      int dist = (dx * dx) + (dy * dy);
+
+      if (dist < min_dist) {
+        min_dist = dist;
+        best_s = s;
+      }
+    }
+
+    if (best_s != -1 && min_dist < 10000) {
+      buffer[i * 2] = PAC_SCREEN_WIDTH - p->sprite_pos[best_s * 2] + 15;
+      buffer[i * 2 + 1] = PAC_SCREEN_HEIGHT - p->sprite_pos[best_s * 2 + 1] - 16;
+    } else {
+      buffer[i * 2] = 0;
+      buffer[i * 2 + 1] = 0;
+    }
+  }
 }
