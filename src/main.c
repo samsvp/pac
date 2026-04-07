@@ -83,7 +83,8 @@ static void screenshot(pac* const p) {
   SDL_free(filename);
 }
 
-static void mainloop(un_socket_t* controller_socket, un_socket_t* state_socket, un_socket_t* pos_socket) {
+static void mainloop(
+    un_socket_t* controller_socket, un_socket_t* state_socket, un_socket_t* pos_socket, un_socket_t* chase_socket) {
   current_time = SDL_GetTicks();
   dt = current_time - last_time;
 
@@ -195,6 +196,7 @@ static void mainloop(un_socket_t* controller_socket, un_socket_t* state_socket, 
   socket_accept(controller_socket);
   socket_accept(state_socket);
   socket_accept(pos_socket);
+  socket_accept(chase_socket);
 
   char buffer[2];
   ssize_t bytes_read = socket_read(controller_socket, buffer, sizeof(buffer));
@@ -234,6 +236,10 @@ static void mainloop(un_socket_t* controller_socket, un_socket_t* state_socket, 
   char pos_buffer[10];
   pac_get_positions(p, pos_buffer);
   socket_write(pos_socket, pos_buffer, sizeof(pos_buffer));
+
+  char chase_buffer[1];
+  chase_buffer[0] = p->cpu.read_byte(p, 0x4DC1);
+  socket_write(chase_socket, chase_buffer, sizeof(chase_buffer));
 
   if (PRINT_TILES) {
     for (int i = 0; i < 10; i+=2) {
@@ -388,19 +394,25 @@ int main(int argc, char** argv) {
     exit(-1);
   }
 
+  un_socket_t chase_socket;
+  if (socket_create(&chase_socket, "/tmp/pac.chase.sock") == -1) {
+    exit(-1);
+  }
+
   current_time = SDL_GetTicks();
   last_time = SDL_GetTicks();
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop(mainloop, 0, 1);
 #else
   while (!should_quit) {
-    mainloop(&controller_socket, &state_socket, &pos_socket);
+    mainloop(&controller_socket, &state_socket, &pos_socket, &chase_socket);
   }
 #endif
 
   socket_destroy(&controller_socket);
   socket_destroy(&state_socket);
   socket_destroy(&pos_socket);
+  socket_destroy(&chase_socket);
 
   pac_quit(p);
   SDL_free(p);
