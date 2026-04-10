@@ -211,6 +211,7 @@ static void mainloop(
           case BUTTON_LEFT: p->p1_left = 1; break;
           case BUTTON_RIGHT: p->p1_right = 1; break;
           case BUTTON_COIN: p->coin_s1 = 1; break;
+          case BUTTON_START: p->p1_start = 1; break;
           default: break;
         }
         break;
@@ -221,6 +222,7 @@ static void mainloop(
           case BUTTON_LEFT: p->p1_left = 0; break;
           case BUTTON_RIGHT: p->p1_right = 0; break;
           case BUTTON_COIN: p->coin_s1 = 0; break;
+          case BUTTON_START: p->p1_start = 0; break;
           default: break;
         }
         break;

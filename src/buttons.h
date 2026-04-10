@@ -11,6 +11,7 @@ typedef enum {
   BUTTON_LEFT,
   BUTTON_RIGHT,
   BUTTON_COIN,
+  BUTTON_START,
   BUTTON_NONE,
 } buttons_t;
 

@@ -9,6 +9,7 @@ buttons_t button_from_char(char c) {
     case 'l': button = BUTTON_LEFT; break;
     case 'r': button = BUTTON_RIGHT; break;
     case 'c': button = BUTTON_COIN; break;
+    case 's': button = BUTTON_START; break;
     default: break;
   }
 
