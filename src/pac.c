@@ -603,19 +603,20 @@ void pac_get_state(pac* const p, char buffer[MAP_WIDTH * MAP_HEIGHT]) {
 // blue [4] [5]
 // clyde [6] [7]
 // pacman [8] [9]
-void pac_get_positions(pac* const p, char buffer[10]) {
+void pac_get_positions(pac* const p, char buffer[15]) {
   // The reliable logical tile coordinate addresses in RAM:
-  uint16_t actor_addrs[5][2] = {
-    {0x4D0B, 0x4D0A}, // Red X, Y
-    {0x4D0D, 0x4D0C}, // Pink X, Y
-    {0x4D0F, 0x4D0E}, // Blue X, Y
-    {0x4D11, 0x4D10}, // Clyde X, Y
-    {0x4D3A, 0x4D39}  // Pac-Man X, Y
+  uint16_t actor_addrs[5][3] = {
+    {0x4D0B, 0x4D0A, 0x4D2C}, // Red X, Y
+    {0x4D0D, 0x4D0C, 0x4D2D}, // Pink X, Y
+    {0x4D0F, 0x4D0E, 0x4D2E}, // Blue X, Y
+    {0x4D11, 0x4D10, 0x4D2F}, // Clyde X, Y
+    {0x4D3A, 0x4D39, 0x4D3C}  // Pac-Man X, Y
   };
 
   for (int i = 0; i < 5; i++) {
     int expected_x = get_pos_x(p, actor_addrs[i][0]) * 8;
     int expected_y = get_pos_y(p, actor_addrs[i][1]) * 8;
+    int dir = p->cpu.read_byte(p, actor_addrs[i][2]);
 
     int best_s = -1;
     int min_dist = 999999;
@@ -636,11 +637,12 @@ void pac_get_positions(pac* const p, char buffer[10]) {
     }
 
     if (best_s != -1 && min_dist < 10000) {
-      buffer[i * 2] = PAC_SCREEN_WIDTH - p->sprite_pos[best_s * 2] + 15;
-      buffer[i * 2 + 1] = PAC_SCREEN_HEIGHT - p->sprite_pos[best_s * 2 + 1] - 16;
+      buffer[i * 3] = PAC_SCREEN_WIDTH - p->sprite_pos[best_s * 2] + 15;
+      buffer[i * 3 + 1] = PAC_SCREEN_HEIGHT - p->sprite_pos[best_s * 2 + 1] - 16;
     } else {
-      buffer[i * 2] = 0;
-      buffer[i * 2 + 1] = 0;
+      buffer[i * 3] = 0;
+      buffer[i * 3 + 1] = 0;
     }
+    buffer[i * 3 + 2] = dir;
   }
 }

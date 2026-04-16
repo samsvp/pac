@@ -235,7 +235,7 @@ static void mainloop(
   pac_get_state(p, state_buffer);
   socket_write(state_socket, state_buffer, sizeof(state_buffer));
 
-  char pos_buffer[10];
+  char pos_buffer[15];
   pac_get_positions(p, pos_buffer);
   socket_write(pos_socket, pos_buffer, sizeof(pos_buffer));
 

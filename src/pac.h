@@ -67,6 +67,6 @@ void pac_update(pac* const p, unsigned int ms);
 void pac_cheat_invincibility(pac* const p);
 
 void pac_get_state(pac* const p, char buffer[MAP_WIDTH * MAP_HEIGHT]);
-void pac_get_positions(pac* const p, char buffer[10]);
+void pac_get_positions(pac* const p, char buffer[15]);
 
 #endif // PAC_PAC_H
